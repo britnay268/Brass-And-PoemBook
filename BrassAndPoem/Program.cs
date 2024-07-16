@@ -70,6 +70,21 @@ do
     try
     {
         choice = int.Parse(Console.ReadLine());
+        switch (choice)
+        {
+            case 1:
+                DisplayAllProducts(products, productTypes);
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            default:
+                Console.WriteLine("You have exited the app...");
+                break;
+        }
     }
     catch (FormatException)
     {
@@ -78,7 +93,6 @@ do
     }
 } while (choice != 5);
 
-Console.WriteLine("You have exited the app...");
 
 void DisplayMenu()
 {
@@ -91,7 +105,12 @@ void DisplayMenu()
 
 void DisplayAllProducts(List<Product> products, List<ProductType> productTypes)
 {
-    throw new NotImplementedException();
+    int index = 1;
+    foreach(Product product in products)
+    {
+        ProductType productType = productTypes.FirstOrDefault(p => p.Id == product.ProductTypeId);
+        Console.WriteLine($@"{index++}. {productType.Title}: {product.Name} - ${product.Price}");
+    }
 }
 
 void DeleteProduct(List<Product> products, List<ProductType> productTypes)
