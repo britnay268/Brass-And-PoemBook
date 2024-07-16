@@ -60,18 +60,29 @@ string greeting = "Welcome to Brass, Poem and Things!";
 Console.WriteLine(greeting);
 
 //implement your loop here
-Console.WriteLine($@"Choose an option:
-    1. Option 1
-    2. Option 2
-    3. Option 3
-    4. Option 4
-    5. Exit");
+int choice = 0;
 
-int choice = int.Parse(Console.ReadLine());
-while (choice != 5)
+// Loop ensures the code inside the loop executes at least once before a user had a chance to enter a chou=ice
+do
 {
-    Console.WriteLine("Exiting the program..");
-}
+    Console.WriteLine("\nSelect an option:");
+    Console.WriteLine("1. ");
+    Console.WriteLine("2. ");
+    Console.WriteLine("3. ");
+    Console.WriteLine("4. ");
+    Console.WriteLine("5. Exit");
+    try
+    {
+        choice = int.Parse(Console.ReadLine());
+    }
+    catch (FormatException)
+    {
+        Console.WriteLine("Invalid input. Please enter a number between 1 and 5.");
+        continue; // Skip to the next iteration if input is invalid
+    }
+} while (choice != 5);
+
+Console.WriteLine("You have exited the app...");
 
 void DisplayMenu()
 {
