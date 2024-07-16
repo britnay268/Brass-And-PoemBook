@@ -55,10 +55,23 @@ List<ProductType> productTypes = new List<ProductType>()
     },
 };
 
-//put your greeting here
+//put your greeting
+string greeting = "Welcome to Brass, Poem and Things!";
+Console.WriteLine(greeting);
 
 //implement your loop here
-Console.WriteLine("Testing");
+Console.WriteLine($@"Choose an option:
+    1. Option 1
+    2. Option 2
+    3. Option 3
+    4. Option 4
+    5. Exit");
+
+int choice = int.Parse(Console.ReadLine());
+while (choice != 5)
+{
+    Console.WriteLine("Exiting the program..");
+}
 
 void DisplayMenu()
 {
