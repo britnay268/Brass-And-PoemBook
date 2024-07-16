@@ -6,6 +6,7 @@
 //put your greeting here
 
 //implement your loop here
+Console.WriteLine("Testing");
 
 void DisplayMenu()
 {
