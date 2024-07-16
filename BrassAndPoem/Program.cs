@@ -66,11 +66,7 @@ int choice = 0;
 do
 {
     Console.WriteLine("\nSelect an option:");
-    Console.WriteLine("1. ");
-    Console.WriteLine("2. ");
-    Console.WriteLine("3. ");
-    Console.WriteLine("4. ");
-    Console.WriteLine("5. Exit");
+    DisplayMenu();
     try
     {
         choice = int.Parse(Console.ReadLine());
@@ -86,7 +82,11 @@ Console.WriteLine("You have exited the app...");
 
 void DisplayMenu()
 {
-    throw new NotImplementedException();
+    Console.WriteLine("1. Display all products");
+    Console.WriteLine("2. Delete a product");
+    Console.WriteLine("3. Add a new product");
+    Console.WriteLine("4. Update product properties");
+    Console.WriteLine("5. Exit");
 }
 
 void DisplayAllProducts(List<Product> products, List<ProductType> productTypes)
