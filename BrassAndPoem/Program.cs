@@ -76,13 +76,14 @@ do
                 DisplayAllProducts(products, productTypes);
                 break;
             case 2:
+                DeleteProduct(products, productTypes);
                 break;
             case 3:
                 break;
             case 4:
                 break;
             default:
-                Console.WriteLine("You have exited the app...");
+                Console.WriteLine("\nYou have exited the app...");
                 break;
         }
     }
@@ -115,7 +116,16 @@ void DisplayAllProducts(List<Product> products, List<ProductType> productTypes)
 
 void DeleteProduct(List<Product> products, List<ProductType> productTypes)
 {
-    throw new NotImplementedException();
+    Console.WriteLine("\nSelect a product (by number) that you would like to delete:\n");
+    DisplayAllProducts(products, productTypes);
+
+    int index = int.Parse(Console.ReadLine());
+
+    Product removedProduct = products[index - 1];
+
+    products.RemoveAt(index - 1);
+
+    Console.WriteLine($"{removedProduct.Name} has been removed");
 }
 
 void AddProduct(List<Product> products, List<ProductType> productTypes)
