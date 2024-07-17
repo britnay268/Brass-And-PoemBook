@@ -136,43 +136,9 @@ void DeleteProduct(List<Product> products, List<ProductType> productTypes)
 
 void AddProduct(List<Product> products, List<ProductType> productTypes)
 {
-    bool validInput = false;
-    int selectedProductType = 0;
+    Console.WriteLine("What Product do you want to create? Select from the available Product types below:\n");
 
-    while (!validInput)
-    {
-        // Display the ProductTypes and prompt the user to choose a type for the new product.
-        Console.WriteLine("What Product do you want to create? Select from the available Product types below:\n");
-
-        ProductTypes();
-
-        try
-        {
-            selectedProductType = int.Parse(Console.ReadLine());
-            validInput = true;
-        }
-        catch (FormatException)
-        {
-            Console.WriteLine("Please enter a number from the options below");
-        }
-    }
-
-    // Prompt the user to enter the name and price of the new product (in this order).
-    Console.WriteLine("\nEnter the name of New Product");
-    string newProductName = Console.ReadLine();
-
-    Console.WriteLine("\nEnter the price of New Product");
-    decimal newProductPrice = decimal.Parse(Console.ReadLine());
-
-    // Create a new instance of the Product class using the provided information.
-
-    Product newProduct = new Product()
-    {
-        Name = newProductName,
-        Price = newProductPrice,
-        ProductTypeId = selectedProductType,
-    };
-
+    Product newProduct = ProductDetails(productTypes, false);
     // Add the newly created product to the list of products.
     products.Add(newProduct);
 
@@ -192,34 +158,14 @@ void UpdateProduct(List<Product> products, List<ProductType> productTypes)
     // Find the product with the provided index and retrieve its reference.
     Product selectedProduct = products[index - 1];
 
-    Console.WriteLine("Enter a updated name: (Press enter if no update)");
-    string updatedName = Console.ReadLine();
+    Product upddateProduct = ProductDetails(productTypes, true, selectedProduct);
 
-    if (!string.IsNullOrEmpty(updatedName))
-    {
-        selectedProduct.Name = updatedName;
-    }
-
-    Console.WriteLine("Enter a updated price: (Press enter if no update)");
-    string updatedPrice = Console.ReadLine();
-
-    if (!string.IsNullOrEmpty(updatedPrice))
-    {
-        decimal.TryParse(updatedPrice, out decimal newPrice);
-        selectedProduct.Price = newPrice;
-    }
-
-    Console.WriteLine("Choose from the option below and enter a updated ProductType: (Press enter if no update)");
-    ProductTypes();
-    string updatedProductTypeId = Console.ReadLine();
-
-    if (!string.IsNullOrEmpty(updatedProductTypeId))
-    {
-        int.TryParse(updatedProductTypeId, out int newProductTypeId);
-        selectedProduct.ProductTypeId = newProductTypeId;
-    }
+    selectedProduct.Name = upddateProduct.Name;
+    selectedProduct.Price = upddateProduct.Price;
+    selectedProduct.ProductTypeId = upddateProduct.ProductTypeId;
 
     ProductType productType = productTypes.FirstOrDefault(p => p.Id == selectedProduct.ProductTypeId);
+
     Console.WriteLine($"Product updated: {selectedProduct.Name}, {selectedProduct.Price}, {productType.Title}");
 }
 
@@ -230,6 +176,96 @@ void ProductTypes()
     {
         Console.WriteLine($"{productType.Id}. {productType.Title}");
     }
+}
+
+Product ProductDetails(List<ProductType> productTypes, bool change, Product existingProduct = null)
+{
+
+    // This without the ?? and ? throws a NullReferenceException when trying to add a product so basically even if existingProduct is null, there will be an initial value
+    string newProductName = existingProduct?.Name ?? "";
+    int newProductType = existingProduct?.ProductTypeId ?? 0;
+    decimal newProductPrice = existingProduct?.Price ?? 0;
+
+    if (change)
+    {
+        bool validInput = false;
+
+        while (!validInput)
+        {
+            // Display the ProductTypes and prompt the user to choose a type for the new product.
+            Console.WriteLine($"\nSelect from the available product types below {(change ? "to update the selected Product" : "to create a Product")}:");
+            ProductTypes();
+
+            string inputProductType = Console.ReadLine();
+            if (!string.IsNullOrEmpty(inputProductType))
+            {
+                newProductType = int.Parse(inputProductType);
+            }
+                validInput = true;
+        }
+
+        // Prompt the user to enter the name and price of the new product (in this order).
+        Console.WriteLine("\nEnter the name of New Product");
+        string inputName = Console.ReadLine();
+
+        if (!string.IsNullOrEmpty(inputName))
+        {
+            newProductName = inputName;
+        }
+
+        Console.WriteLine("\nEnter the price of New Product");
+        string inputPrice = Console.ReadLine();
+
+        if (!string.IsNullOrEmpty(inputPrice))
+        {
+            newProductPrice = decimal.Parse(inputPrice);
+        }
+    }
+    else
+    {
+        // Display the ProductTypes and prompt the user to choose a type for the new product.
+        Console.WriteLine($"\nSelect from the available product types below {(change ? "to update the selected Product" : "to create a Product")}:");
+        ProductTypes();
+
+        string inputProductType = Console.ReadLine();
+        int parsedProductType;
+        while (!int.TryParse(inputProductType, out parsedProductType))
+        {
+            Console.WriteLine("ProductType cannot be empty. Please enter a number from product type list!");
+            inputProductType = Console.ReadLine();
+        }
+        newProductType = parsedProductType;
+
+        Console.WriteLine("\nEnter the name of New Product");
+        newProductName = Console.ReadLine();
+
+        while (string.IsNullOrEmpty(newProductName))
+        {
+            Console.WriteLine("Name cannot be empty. Please enter a name!");
+            newProductName = Console.ReadLine();
+        }
+
+        Console.WriteLine("\nEnter the price of New Product");
+        string inputPrice = Console.ReadLine();
+        decimal parsedPrice;
+
+        while (!decimal.TryParse(inputPrice, out parsedPrice))
+        {
+            Console.WriteLine("Price cannot be empty. Please enter a name!");
+            inputPrice = Console.ReadLine();
+        }
+
+        newProductPrice = parsedPrice;
+    }
+
+    // Create a new instance of the Product class using the provided information.
+
+    return new Product()
+    {
+        Name = newProductName,
+        Price = newProductPrice,
+        ProductTypeId = newProductType,
+    };
 }
 
 // don't move or change this!
