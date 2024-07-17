@@ -66,14 +66,31 @@ int choice = 0;
 do
 {
     Console.WriteLine("\nSelect an option:");
-    Console.WriteLine("1. ");
-    Console.WriteLine("2. ");
-    Console.WriteLine("3. ");
-    Console.WriteLine("4. ");
-    Console.WriteLine("5. Exit");
+    DisplayMenu();
     try
     {
         choice = int.Parse(Console.ReadLine());
+        switch (choice)
+        {
+            case 1:
+                DisplayAllProducts(products, productTypes);
+                break;
+            case 2:
+                DeleteProduct(products, productTypes);
+                break;
+            case 3:
+                AddProduct(products, productTypes);
+                break;
+            case 4:
+                UpdateProduct(products, productTypes);
+                break;
+            case 5:
+                Console.WriteLine("\nYou have exited the app!");
+                break;
+            default:
+                Console.WriteLine("\nInput out of range! Please enter a number between 1 and 5");
+                break;
+        }
     }
     catch (FormatException)
     {
@@ -82,31 +99,137 @@ do
     }
 } while (choice != 5);
 
-Console.WriteLine("You have exited the app...");
+
 
 void DisplayMenu()
 {
-    throw new NotImplementedException();
+    Console.WriteLine("1. Display all products");
+    Console.WriteLine("2. Delete a product");
+    Console.WriteLine("3. Add a new product");
+    Console.WriteLine("4. Update product properties");
+    Console.WriteLine("5. Exit");
 }
 
 void DisplayAllProducts(List<Product> products, List<ProductType> productTypes)
 {
-    throw new NotImplementedException();
+    int index = 1;
+    foreach(Product product in products)
+    {
+        ProductType productType = productTypes.FirstOrDefault(p => p.Id == product.ProductTypeId);
+        Console.WriteLine($@"{index++}. {productType.Title}: {product.Name} - ${product.Price}");
+    }
 }
 
 void DeleteProduct(List<Product> products, List<ProductType> productTypes)
 {
-    throw new NotImplementedException();
+    Console.WriteLine("\nSelect a product (by number) that you would like to delete:\n");
+    DisplayAllProducts(products, productTypes);
+
+    int index = int.Parse(Console.ReadLine());
+
+    Product removedProduct = products[index - 1];
+
+    products.RemoveAt(index - 1);
+
+    Console.WriteLine($"{removedProduct.Name} has been removed");
 }
 
 void AddProduct(List<Product> products, List<ProductType> productTypes)
 {
-    throw new NotImplementedException();
+    bool validInput = false;
+    int selectedProductType = 0;
+
+    while (!validInput)
+    {
+        // Display the ProductTypes and prompt the user to choose a type for the new product.
+        Console.WriteLine("What Product do you want to create? Select from the available Product types below:\n");
+
+        ProductTypes();
+
+        try
+        {
+            selectedProductType = int.Parse(Console.ReadLine());
+            validInput = true;
+        }
+        catch (FormatException)
+        {
+            Console.WriteLine("Please enter a number from the options below");
+        }
+    }
+
+    // Prompt the user to enter the name and price of the new product (in this order).
+    Console.WriteLine("\nEnter the name of New Product");
+    string newProductName = Console.ReadLine();
+
+    Console.WriteLine("\nEnter the price of New Product");
+    decimal newProductPrice = decimal.Parse(Console.ReadLine());
+
+    // Create a new instance of the Product class using the provided information.
+
+    Product newProduct = new Product()
+    {
+        Name = newProductName,
+        Price = newProductPrice,
+        ProductTypeId = selectedProductType,
+    };
+
+    // Add the newly created product to the list of products.
+    products.Add(newProduct);
+
+    Console.WriteLine("\nNew Product has been added!\n");
+
+    DisplayAllProducts(products, productTypes);
 }
 
 void UpdateProduct(List<Product> products, List<ProductType> productTypes)
 {
-    throw new NotImplementedException();
+    Console.WriteLine("What Product do you want to update? Select from the available Products below:\n");
+
+    DisplayAllProducts(products, productTypes);
+
+    int index = int.Parse(Console.ReadLine());
+
+    // Find the product with the provided index and retrieve its reference.
+    Product selectedProduct = products[index - 1];
+
+    Console.WriteLine("Enter a updated name: (Press enter if no update)");
+    string updatedName = Console.ReadLine();
+
+    if (!string.IsNullOrEmpty(updatedName))
+    {
+        selectedProduct.Name = updatedName;
+    }
+
+    Console.WriteLine("Enter a updated price: (Press enter if no update)");
+    string updatedPrice = Console.ReadLine();
+
+    if (!string.IsNullOrEmpty(updatedPrice))
+    {
+        decimal.TryParse(updatedPrice, out decimal newPrice);
+        selectedProduct.Price = newPrice;
+    }
+
+    Console.WriteLine("Choose from the option below and enter a updated ProductType: (Press enter if no update)");
+    ProductTypes();
+    string updatedProductTypeId = Console.ReadLine();
+
+    if (!string.IsNullOrEmpty(updatedProductTypeId))
+    {
+        int.TryParse(updatedProductTypeId, out int newProductTypeId);
+        selectedProduct.ProductTypeId = newProductTypeId;
+    }
+
+    ProductType productType = productTypes.FirstOrDefault(p => p.Id == selectedProduct.ProductTypeId);
+    Console.WriteLine($"Product updated: {selectedProduct.Name}, {selectedProduct.Price}, {productType.Title}");
+}
+
+void ProductTypes()
+{
+    string productTypeTitle = productTypes.Select(p => p.Title).ToString();
+    foreach (ProductType productType in productTypes)
+    {
+        Console.WriteLine($"{productType.Id}. {productType.Title}");
+    }
 }
 
 // don't move or change this!
