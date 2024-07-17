@@ -82,9 +82,13 @@ do
                 AddProduct(products, productTypes);
                 break;
             case 4:
+                UpdateProduct(products, productTypes);
+                break;
+            case 5:
+                Console.WriteLine("\nYou have exited the app!");
                 break;
             default:
-                Console.WriteLine("\nYou have exited the app...");
+                Console.WriteLine("\nInput out of range! Please enter a number between 1 and 5");
                 break;
         }
     }
@@ -94,6 +98,7 @@ do
         continue; // Skip to the next iteration if input is invalid
     }
 } while (choice != 5);
+
 
 
 void DisplayMenu()
@@ -139,11 +144,7 @@ void AddProduct(List<Product> products, List<ProductType> productTypes)
         // Display the ProductTypes and prompt the user to choose a type for the new product.
         Console.WriteLine("What Product do you want to create? Select from the available Product types below:\n");
 
-        string productTypeTitle = productTypes.Select(p => p.Title).ToString();
-        foreach(ProductType productType in productTypes)
-        {
-            Console.WriteLine($"{productType.Id}. {productType.Title}");
-        }
+        ProductTypes();
 
         try
         {
@@ -175,14 +176,60 @@ void AddProduct(List<Product> products, List<ProductType> productTypes)
     // Add the newly created product to the list of products.
     products.Add(newProduct);
 
-    Console.WriteLine("New Product has been added!\n");
+    Console.WriteLine("\nNew Product has been added!\n");
 
     DisplayAllProducts(products, productTypes);
 }
 
 void UpdateProduct(List<Product> products, List<ProductType> productTypes)
 {
-    throw new NotImplementedException();
+    Console.WriteLine("What Product do you want to update? Select from the available Products below:\n");
+
+    DisplayAllProducts(products, productTypes);
+
+    int index = int.Parse(Console.ReadLine());
+
+    // Find the product with the provided index and retrieve its reference.
+    Product selectedProduct = products[index - 1];
+
+    Console.WriteLine("Enter a updated name: (Press enter if no update)");
+    string updatedName = Console.ReadLine();
+
+    if (!string.IsNullOrEmpty(updatedName))
+    {
+        selectedProduct.Name = updatedName;
+    }
+
+    Console.WriteLine("Enter a updated price: (Press enter if no update)");
+    string updatedPrice = Console.ReadLine();
+
+    if (!string.IsNullOrEmpty(updatedPrice))
+    {
+        decimal.TryParse(updatedPrice, out decimal newPrice);
+        selectedProduct.Price = newPrice;
+    }
+
+    Console.WriteLine("Choose from the option below and enter a updated ProductType: (Press enter if no update)");
+    ProductTypes();
+    string updatedProductTypeId = Console.ReadLine();
+
+    if (!string.IsNullOrEmpty(updatedProductTypeId))
+    {
+        int.TryParse(updatedProductTypeId, out int newProductTypeId);
+        selectedProduct.ProductTypeId = newProductTypeId;
+    }
+
+    ProductType productType = productTypes.FirstOrDefault(p => p.Id == selectedProduct.ProductTypeId);
+    Console.WriteLine($"Product updated: {selectedProduct.Name}, {selectedProduct.Price}, {productType.Title}");
+}
+
+void ProductTypes()
+{
+    string productTypeTitle = productTypes.Select(p => p.Title).ToString();
+    foreach (ProductType productType in productTypes)
+    {
+        Console.WriteLine($"{productType.Id}. {productType.Title}");
+    }
 }
 
 // don't move or change this!
