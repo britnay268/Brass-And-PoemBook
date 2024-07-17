@@ -79,6 +79,7 @@ do
                 DeleteProduct(products, productTypes);
                 break;
             case 3:
+                AddProduct(products, productTypes);
                 break;
             case 4:
                 break;
@@ -130,7 +131,53 @@ void DeleteProduct(List<Product> products, List<ProductType> productTypes)
 
 void AddProduct(List<Product> products, List<ProductType> productTypes)
 {
-    throw new NotImplementedException();
+    bool validInput = false;
+    int selectedProductType = 0;
+
+    while (!validInput)
+    {
+        // Display the ProductTypes and prompt the user to choose a type for the new product.
+        Console.WriteLine("What Product do you want to create? Select from the available Product types below:\n");
+
+        string productTypeTitle = productTypes.Select(p => p.Title).ToString();
+        foreach(ProductType productType in productTypes)
+        {
+            Console.WriteLine($"{productType.Id}. {productType.Title}");
+        }
+
+        try
+        {
+            selectedProductType = int.Parse(Console.ReadLine());
+            validInput = true;
+        }
+        catch (FormatException)
+        {
+            Console.WriteLine("Please enter a number from the options below");
+        }
+    }
+
+    // Prompt the user to enter the name and price of the new product (in this order).
+    Console.WriteLine("\nEnter the name of New Product");
+    string newProductName = Console.ReadLine();
+
+    Console.WriteLine("\nEnter the price of New Product");
+    decimal newProductPrice = decimal.Parse(Console.ReadLine());
+
+    // Create a new instance of the Product class using the provided information.
+
+    Product newProduct = new Product()
+    {
+        Name = newProductName,
+        Price = newProductPrice,
+        ProductTypeId = selectedProductType,
+    };
+
+    // Add the newly created product to the list of products.
+    products.Add(newProduct);
+
+    Console.WriteLine("New Product has been added!\n");
+
+    DisplayAllProducts(products, productTypes);
 }
 
 void UpdateProduct(List<Product> products, List<ProductType> productTypes)
